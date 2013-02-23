@@ -96,11 +96,11 @@ class Loadules
         )
         {
             $seed_url = $config["seed"]["css"];
-            $urls = array_merge($seed_url, $urls);
+            $urls = array_merge((array)$seed_url, $urls);
         }
         foreach ($urls as $href)
         {
-            $html[] = "<link type=\"text/javascript\" rel=\"stylesheet\" href=\"$href\">";
+            $html[] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"$href\">";
         }
 
         // Generates script tags.
@@ -114,13 +114,12 @@ class Loadules
         if (count($js_modules))
         {
             $html[] = sprintf(
-                '<script>YUI(%s).use("%s", function (Y) {%s});</script>',
+                '<script>YUI(%s).use("module-manager", "%s", function (Y) {%s});</script>',
                 json_encode($config["yui"]["config"]),
-                implode(",", $js_modules),
-                implode(",", $config["yui"]["callback"])
+                implode('","', $js_modules),
+                $config["yui"]["callback"]
             );
         }
-
         return implode("\n", $html);
     }
 
@@ -150,14 +149,15 @@ class Loadules
         foreach ($modules as $module)
         {
             // Finds all dependent CSS files.
-            $files = $config["metadata"]["css"][$module];
-            if ($files)
+            if ( ! array_key_exists($module, $config["metadata"]["css"]))
             {
-                $css_files = array_merge($css_files, (array)$files);
+                continue;
             }
+            $files = $config["metadata"]["css"][$module];
+            $css_files = array_merge($css_files, (array)$files);
 
             // Checks if JavaScript module exists.
-            if ($config["metadata"]["js"][$module])
+            if (isset($config["metadata"]["js"][$module]))
             {
                 $js_modules[] = $module;
             }
