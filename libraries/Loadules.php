@@ -24,13 +24,13 @@ class Loadules
         $this->CI =& get_instance();
     }
 
-    private function _splitUrl($base, $files = array(), $separator = ",", $max_length = 1024)
+    private function _split_url($base, $files = array(), $separator = ",", $max_length = 1024)
     {
         $results = array();
         $url = $base . implode(",", $files);
 
         // Checks if url exceeds max length.
-        if (strlen($url) <= $max_length)
+        if (mb_strlen($url) <= $max_length)
         {
             $results[] = $url;
             return $results;
@@ -45,7 +45,7 @@ class Loadules
             $url = $base . implode($separator, $items);
 
             // Oops! It exceeds max length!!
-            if (strlen($url) > $max_url_length)
+            if (mb_strlen($url) > $max_url_length)
             {
                 // Remove the last file from $items array.
                 $file = array_pop($items);
@@ -55,7 +55,7 @@ class Loadules
                 $results[] = $base . implode($separator, $items);
 
                 // Creates the $items array for next iteration.
-                $items = [];
+                $items = array();
                 if ($file) {
                     $items[] = $file;
                 }
@@ -89,7 +89,7 @@ class Loadules
         $html = array();
 
         // Splits CSS URLs according to max_length.
-        $urls = $this->_splitUrl($base, $css_files, $config["separator"], $max_length);
+        $urls = $this->_split_url($base, $css_files, $config["separator"], $max_length);
         if (
             array_key_exists("seed", $config) &&
             array_key_exists("css", $config["seed"])
