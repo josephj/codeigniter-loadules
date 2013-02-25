@@ -5,12 +5,16 @@ codeigniter-loadules
 
 Loadules is a portmanteau word that blends the words `load` and `modules`.
 In miiiCasa, it means a set of tools for loading JavaScript and CSS module files.
-
 codeigniter-loadules is a CodeIgniter library that helps to load CSS and JavaScript (YUI) files.
 
 ## Installation
 
 For CodeIgniter 2.x versions:
+
+```    
+cd <codeigniter_app_folder>;
+git clone <this_repository> third_party/loadules;
+```
 
 ```php
 $this->load->add_package_path(APPPATH . "third_party/loadules/");        
