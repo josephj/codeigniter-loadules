@@ -15,24 +15,21 @@ codeigniter-loadules is a CodeIgniter library that helps to load CSS and JavaScr
     cd <codeigniter_app_folder>;
     git clone <this_repository> third_party/loadules;
     ```
-1. Make this library work.
-  * For CodeIgniter 2.x versions:
+1. Make symbolic link if your CodeIgniter version is 1.x.
 
-        ```php
-        $this->load->add_package_path(APPPATH . "third_party/loadules/");        
-        ```
-  * For CodeIgniter 1.x versions:
-
-        ```    
-        cd libraries;
-        ln -s ../third_party/loadules/libraries/Loadules.php;
-        ```
+    ```    
+    cd libraries;
+    ln -s ../third_party/loadules/libraries/Loadules.php;
+    ```
 
 ## Usage
 
 1. Use loadules library to load JavaScript and CSS modules.
 
     ```php
+    // Adds the following line if your CodeIgnier is 2.x.
+    $this->load->add_package_path(APPPATH . "third_party/loadules/");
+    
     $this->load->library("loadules");
     $this->loadules->set("welcome/_notification", "common/_sidebar");
     echo $this->loadules->load();
