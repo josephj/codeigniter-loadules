@@ -114,7 +114,7 @@ class Loadules
         if (count($js_modules))
         {
             $html[] = sprintf(
-                '<script>YUI(%s).use("module-manager", "%s", function (Y) {%s});</script>',
+                '<script>YUI(%s).use("%s", function (Y) {%s});</script>',
                 json_encode($config["yui"]["config"]),
                 implode('","', $js_modules),
                 $config["yui"]["callback"]
@@ -149,12 +149,11 @@ class Loadules
         foreach ($modules as $module)
         {
             // Finds all dependent CSS files.
-            if ( ! array_key_exists($module, $config["metadata"]["css"]))
+            if (array_key_exists($module, $config["metadata"]["css"]))
             {
-                continue;
+                $files = $config["metadata"]["css"][$module];
+                $css_files = array_merge($css_files, (array)$files);
             }
-            $files = $config["metadata"]["css"][$module];
-            $css_files = array_merge($css_files, (array)$files);
 
             // Checks if JavaScript module exists.
             if (isset($config["metadata"]["js"][$module]))
@@ -163,9 +162,10 @@ class Loadules
             }
         }
         $css_files = array_unique($css_files);
-        $this->css_files  = $css_files;
+        $this->css_files = $css_files;
         $this->js_modules = $js_modules;
     }
+
 }
 /* End of file Loadules.php */
 ?>
