@@ -11,6 +11,11 @@ if ( ! defined("BASEPATH"))
 $config = array(
 
     /**
+     * Maximum GET length of CSS request.
+     */
+    "max_url_length": 1024,
+
+    /**
      * CSS/JS seed URLs.
      */
     "seed" => array(

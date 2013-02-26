@@ -24,6 +24,23 @@ class Loadules
         $this->CI =& get_instance();
     }
 
+    private function _array_merge_recursive_distinct(array &$array1, array &$array2)
+    {
+        $merged = $array1;
+        foreach ($array2 as $key => &$value)
+        {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key]))
+            {
+                $merged[$key] = array_merge_recursive_distinct($merged[$key], $value);
+            }
+            else
+            {
+                $merged[$key] = $value;
+            }
+        }
+        return $merged;
+    }
+
     private function _split_url($base, $files = array(), $separator = ",", $max_length = 1024)
     {
         $results = array();
@@ -126,23 +143,45 @@ class Loadules
     /**
      * Sets modules you want use.
      *
-     *    $this->static_module->set("common/_masthead", "home/_notification");
+     *    $options = array(
+     *        "yui" => array(
+     *            "config" => array(
+     *                "lang" => "zh-TW",
+     *            ),
+     *        ),
+     *    );
+     *    $this->static_module->set("common/_masthead", "home/_notification", );
      *
      * @method set
-     * @param $modules {Array} The used module list.
+     * @param $modules {Array} Used module list.
+     * @param $options {Array} Overrides loadules configuration.
      * @public
      */
-    public function set($modules)
+    public function set($modules, $options)
     {
         if (gettype(func_get_arg(0)) === "string")
         {
             $modules = func_get_args();
+            $options = $module[count($module) - 1];
+            if (gettype($options) === "array")
+            {
+                $options = array_pop($modules);
+            }
+            else
+            {
+                $options = NULL;
+            }
         }
 
         // Loads configuration file - config/loadules.php.
         $this->config->load("loadules", TRUE);
         $config = $this->config->item("loadules");
+        if ($options)
+        {
+            $config = $this->_array_merge_recursive_distinct($config, $options);
+        }
         $this->_config = $config;
+
         $css_files = array();
         $js_modules = array();
 
